@@ -10,7 +10,10 @@
 	"express":"3.2.6",
 	"socket.io":"0.9.16",
   "mongoose":"4.2.8",
-  "mongodb":"~2.0.47"
+  "mongodb":"~2.0.47",
+  "method-override": "^2.1.2",
+  "body-parser": "^1.5.1",
+  "emoji" : "~0.3.2"
 },
   "author": "",
   "license": "BSD-2-Clause"

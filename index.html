@@ -1,28 +1,79 @@
 <html>
 <head>
+	<meta charset="utf-8">
 	<title>Chat with socket.io and node.js</title>
+	<link rel="shortcut icon" type="image/jpg" href="/images/favicon.jpg"/>
 	<style>
-		#chat{
-			height:500px;
-		}
-		#contentWrap{
-			display: none;
-		}
-		#chatWrap{
-			float: left;
-			border: 1px #000 solid;
-		}
-		.error{
-			color: red;
-		}
-		.whisper{
-			color: gray;
-			font-style: italic;
-		}
-	</style>
+
+	h1 {
+	    color: #000!important;
+	    text-align: center;
+	    font-size: 60px!important;
+	    font-weight: 600!important;
+	}
+
+    #contentWrap{
+        display: none;
+    }
+    #chatWrap{
+        float: left;
+    }
+    #chat{
+        position: relative;
+        width: 100%;
+        float:left;
+        min-height:100px;
+        height: 30%;
+        overflow: auto;
+    }
+	#emojiWrapper {
+	  display: none;
+	  width: 500px;
+	  bottom: 160px;
+	  position: absolute;
+	  background-color: #aaa;
+	  box-shadow: 0 0 10px #555;
+	}
+	#emojiWrapper div {
+	  margin: 2px;
+	  padding: 2px;
+	  width: 25px;
+	  height: 25px;
+	}
+	#emojiWrapper span:hover {
+	  background-color: blue;
+	}
+	.emoji-wysiwyg-editor {
+		text-align: left;
+	}
+
+	.emoji-picker-icon{
+		right: 95px !important;
+		font-size: 22px !important;
+	}
+
+	/*.container #inner {
+		width: 100%;
+	}*/
+
+	#player {
+		width: 100%;
+		height: 500px;
+	}
+
+	#player figure{
+		margin: 50px auto !important;
+		height: 80% !important;
+	}
+
+	body{
+		background-image: url('/images/fondo.jpg');
+	}
+
+    </style>
 </head>
 <body>
-	<div id="nickWrap">
+	<!--<div id="nickWrap">
 		<p>Enter a username:</p>
 		<p id="nickError"></p>
 		<form id="setNick">
@@ -36,16 +87,139 @@
 			<div id="chat"></div>
 			<form id="send-message">
 				<input size="35" id="message"></input>
-				<input type="submit"></input>
+				<input type="submit"></input><div class="emojstext"></div>
 			</form>
 		</div>
 		<div id="users"></div>
-	</div>
-	
-	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
-	<script src="/socket.io/socket.io.js"></script>
+	</div>-->
+	<div class="container">        
+        <div class="page-header">
+            <h1>SuperBowl <small> Chat </a></small></h1>
+        </div>
+        <div id="player"></div>
+        <!--<div id="inner">
+	        <div id="player"></div>
+	        
+	        <div id="chat">
+		        
+		    </div>
+	    </div>-->
+	    <div class="input-group" style="width:300px;text-align:center;margin:0 auto;" id="nickWrap">
+            <input id="nickname" class="form-control input-lg" type="text" placeholder="Nickname">
+            <span class="input-group-btn">
+                <button class="btn btn-lg btn-primary" type="submit" id="setNick">OK</button>
+            </span>
+        </div>
+        <div class="alert fade in alert-danger alert-dismissable" data-dismiss="alert" id="login-error" style="display:none;">
+            <button type="button" class="close" id="closeAlert">×</button>
+            Este nickname ya fue usado. Elige uno nuevo.!
+        </div>
+        
+        <div id="contentWrap" class="row" style="height: 70%;">
+            <div class="col-md-2"></div>
+            <div id="chatWrap"  class="col-md-6">
+                <div class="panel panel-info">
+                    <div class="panel-heading">Chat</div>
+                    <div id="chat" class="panel-body"></div>
+                </div>                    
+                <div>
+                    <form id="send-message" class="input-group" style="text-align:center;margin:0 auto;">
+                    <input id="message" class="form-control input-lg" type="text" data-emojiable="true">
+                    
+                    <span class="input-group-btn">
+                    <button class="btn btn-lg btn-primary" type="submit">Enviar</button>
+                    <div class="emojstext">👬</div>
+                    </span>
+                    </form>
+                </div>
+                <!--
+                    <input size="35" id="message"></input>
+                    <input type="submit"></input>
+                </form>-->
+            </div>
+            <div class="col-md-2">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        En linea
+                    </div>
+                    <div id="users" class="panel-body"></div>
+                </div>
+            </div>                
+        </div>            
+    </div>
+    <link href="http://cdn.staticfile.org/emoji/0.2.2/emoji.css" rel="stylesheet" type="text/css" />
+	<script src="http://cdn.staticfile.org/jquery/2.1.0/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/emoji/0.2.2/emoji.js"></script>
+	<script type="text/javascript" src="//bitdash-a.akamaihd.net/bitmovin-portal/5653a2b5c8cad/5d3f0ccf6e/latest/bitdash.min.js"></script>
+	<!--<script src="http://code.jquery.com/jquery-latest.min.js"></script>-->
+
+	<!-- Begin emoji-picker JavaScript -->
+	  <script src="lib/js/nanoscroller.min.js"></script>
+	  <script src="lib/js/tether.min.js"></script>
+	  <script src="lib/js/config.js"></script>
+	  <script src="lib/js/util.js"></script>
+	  <script src="lib/js/jquery.emojiarea.js"></script>
+	  <script src="lib/js/emoji-picker.js"></script>
+	  <!-- End emoji-picker JavaScript -->
+
+	<!-- Begin emoji-picker Stylesheets -->
+    <link href="lib/css/nanoscroller.css" rel="stylesheet">
+    <link href="lib/css/emoji.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <!-- End emoji-picker Stylesheets -->
+
+	<!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
+	<script src="/socket.io/socket.io.js"></script>	
+	<script type="text/javascript">
+  
+    var conf = {
+        key:       "8017a3d7c4edbac93e51398358bf5343",
+        source: {
+ 
+          dash:  'http://192.168.43.206:80/dash/.mpd'    
+          
+        },
+    playback: { autoplay: true },
+                style: {
+                    width: "50%",
+                    height: "50%",
+                    
+    }};
+    var player = bitdash("player").setup(conf);
+
+
+	</script>
 	<script>
 		jQuery(function($){
+
+			// Initializes and creates emoji set from sprite sheet
+		      window.emojiPicker = new EmojiPicker({
+		        emojiable_selector: '[data-emojiable=true]',
+		        assetsPath: 'lib/img/',
+		        popupButtonClasses: 'fa fa-smile-o'
+		      });
+		      // Finds all elements with `emojiable_selector` and converts them to rich emoji input fields
+		      // You may want to delay this step if you have dynamically created input fields that appear later in the loading process
+		      // It can be called as many times as necessary; previously converted input fields will not be converted again
+		      window.emojiPicker.discover();
+
+			//emoji
+              var $text = $('.emojstext');
+			  var html = $text.html().trim().replace(/\n/g, '<br/>');
+			  html = jEmoji.softbankToUnified(html);
+			  html = jEmoji.googleToUnified(html);
+			  html = jEmoji.docomoToUnified(html);
+			  html = jEmoji.kddiToUnified(html);
+			  $text.html(jEmoji.unifiedToHTML(html));
+
 			var socket = io.connect();
 			var $nickForm = $('#setNick');
 			var $nickError = $('#nickError');
@@ -54,34 +228,43 @@
 			var $messageForm = $('#send-message');
 			var $messageBox = $('#message');
 			var $chat = $('#chat');
+			var $closeAlert = $('#closeAlert');
 			
-			$nickForm.submit(function(e){
+			$nickForm.click(function(e){
 				e.preventDefault();
 				socket.emit('new user', $nickBox.val(), function(data){
 					if(data){
 						$('#nickWrap').hide();
 						$('#contentWrap').show();
 					} else{
-						$nickError.html('That username is already taken!  Try again.');
+						$("#login-error").show();
+						//$nickError.html('That username is already taken!  Try again.');
 					}
 				});
 				$nickBox.val('');
 			});
 			
-			socket.on('usernames', function(data){
-				var html = '';
-				for(var i=0; i < data.length; i++){
-					html += data[i] + '<br/>'
-				}
-				$users.html(html);
-			});
+			$closeAlert.click(function(e) {
+                $("#login-error").hide();
+            });			
 			
 			$messageForm.submit(function(e){
-				e.preventDefault();
+			   e.preventDefault();
+               if($messageBox.val()!='') {
+                var str = $messageBox.val();
+                //verificar si el usuario selecciono comunicarse con @Eliza
+                if(str.indexOf("@Eliza") == 0){
+                  socket.emit('send message to eliza', str+'-eliza');
+                }else{
+                  socket.emit('send message', str);
+                }
+               }
+               $messageBox.val('');
+				/*e.preventDefault();
 				socket.emit('send message', $messageBox.val(), function(data){
 					$chat.append('<span class="error">' + data + "</span><br/>");
 				});
-				$messageBox.val('');
+				$messageBox.val('');*/
 			});
 			
 			socket.on('load old msgs', function(docs){
@@ -92,6 +275,14 @@
 			
 			socket.on('new message', function(data){
 				displayMsg(data);
+			});
+
+			socket.on('usernames', function(data){
+				var html = '';
+				for(var i=0; i < data.length; i++){
+					html += data[i] + '<br/>'
+				}
+				$users.html(html);
 			});
 			
 			function displayMsg(data){
